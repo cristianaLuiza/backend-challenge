@@ -106,4 +106,42 @@ Os próximos passos para evoluir o projeto são:
 - Garantir o envio e o tratamento de mensagens para o SQS.
 - Implementar autenticação e autorização dos jogadores.
 
-Este documento registra o que foi desenvolvido, as decisões consideradas e os pontos que ficaram como melhorias futuras devido ao tempo disponível para o desafio.
+
+## 9. Como eu faria o envio das notficações para a FILA
+
+Para realizar o envio de eventos para a fila SQS de forma segura, a proposta é utilizar o padrão **Transactional Outbox**.
+
+A ideia é registrar o evento no banco de dados junto com a movimentação financeira, dentro da mesma transação. Dessa forma, se a operação for concluída, o evento também será salvo. Se ocorrer uma falha na transação, ambos serão revertidos.
+
+O envio para o SQS será realizado por um processo separado, responsável por buscar os eventos pendentes na tabela `outbox` e enviá-los para a fila `outbox-queue`.
+
+O fluxo proposto é:
+
+1. A API processa a movimentação financeira e salva o evento na Outbox.
+2. Um worker consulta periodicamente os eventos pendentes.
+3. O worker envia cada evento para a fila SQS.
+4. Após confirmar o envio, o evento é marcado como enviado no banco de dados.
+5. Se ocorrer uma falha, o evento permanece disponível para uma nova tentativa.
+
+**Benefícios dessa abordagem:**
+
+- Mantém o registro financeiro e o evento consistentes no banco de dados.
+- Reduz o risco de perder notificações quando o SQS estiver indisponível.
+- Permite tentar novamente o envio de eventos que falharam.
+
+**Ponto de atenção:** o envio e a atualização do banco não acontecem na mesma transação. Por isso, uma mensagem pode ser enviada mais de uma vez. É necessário tratar duplicidades e garantir que o consumidor processe cada evento de forma idempotente.
+
+A implementação do worker responsável pelo envio e pela atualização dos eventos deve ser concluída para que esse fluxo funcione de ponta a ponta.
+
+![Fluxo do padrão Transactional Outbox](./docs/image/Fluxo%20de%20Transações%20e%20Mensageria%20Assíncrona.png)
+
+
+### Observações pessoais
+
+Foi um desafio extenso, com bastante conteúdo e muita lógica para pensar. Infelizmente, não consegui implementar tudo da forma como gostaria dentro do tempo disponível. Por isso, reconheço que alguns pontos, como a estrutura e a organização da arquitetura do projeto, poderiam ter ficado beeem melhores, meu services estão com muitas funções em desacordo os princípios de Clean Code e Clean Architecture que procuro seguir, mas foi pelo tempo mesmo, costumor ser muito organizada.
+
+Durante o desenvolvimento, priorizei aspectos que considerei fundamentais para esse tipo de sistema, como a correção das movimentações financeiras, o controle de concorrência, a idempotência, os testes e a documentação.
+
+Foi um projeto no qual pude aplicar e aprofundar muitas das minhas habilidades, e procurei desenvolver cada etapa com bastante atenção e responsabilidade.
+
+Agradeço pela oportunidade! sigo animada e ansiosa para a entrevista de apresentação do projeto. 😊

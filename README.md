@@ -170,6 +170,9 @@ Quando terminar de trabalhar no projeto, você pode parar os containers com:
 docker compose down
 ```
 
+## 📚 Documentação
+
+- [Arquitetura do projeto](./ARCHITECTURE.md) - explica as decisões técnicas, a organização da solução e os principais pontos da implementação.
 ---
 
 Feito com 💗 por **Cristiana Luiza**.
