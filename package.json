@@ -1,0 +1,41 @@
+{
+  "name": "jungle-gaming",
+  "module": "index.ts",
+  "private": true,
+  "scripts": {
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "start:debug": "nest start --debug --watch",
+    "start:prod": "node dist/main",
+    "build": "nest build",
+    "test": "bun test",
+    "test:unit": "bun test src/domain src/utils src/aplicacoes/wagering.service.spec.ts",
+    "test:integration": "bun test src/aplicacoes/wagering.integration.spec.ts"
+  },
+  "dependencies": {
+    "@nestjs/common": "^12.1.2",
+    "@nestjs/config": "^12.0.1",
+    "@nestjs/core": "^12.1.2",
+    "@nestjs/platform-express": "^12.1.2",
+    "@nestjs/typeorm": "^12.0.2",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
+    "decimal.js": "^10.6.0",
+    "pg": "^8.23.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "typeorm": "^1.1.2"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^12.0.8",
+    "@nestjs/schematics": "^12.0.6",
+    "@nestjs/testing": "^12.1.2",
+    "@testcontainers/postgresql": "^12.2.0",
+    "@types/bun": "latest",
+    "@types/node": "^26.6.4",
+    "@types/pg": "^8.23.1",
+    "testcontainers": "^12.2.0",
+    "ts-node": "^10.9.2",
+    "typescript": "5.9.3"
+  }
+}
