@@ -1,29 +1,31 @@
-# Jungle Gaming — Backend Challenge
+# 🌸 Jungle Gaming Backend Challenge
 
-Implementação do desafio técnico de backend da Jungle Gaming, utilizando NestJS, TypeScript e PostgreSQL, com foco em processamento de transações financeiras, consistência de dados e mensageria assíncrona por meio do padrão Transactional Outbox.
+Oii! Este é o meu projeto desenvolvido para o desafio técnico de Backend da **Jungle Gaming**.
 
-## Tecnologias
+A aplicação foi construída com **NestJS, TypeScript e PostgreSQL**, com foco no processamento de transações financeiras, na consistência dos dados e na comunicação assíncrona entre serviços.
 
-- Node.js
-- TypeScript
-- NestJS
-- PostgreSQL
-- TypeORM
-- Docker e Docker Compose
-- LocalStack
-- Amazon SQS API
-- AWS SDK for JavaScript v3
+Um dos pontos principais do projeto é o padrão **Transactional Outbox**, utilizado para ajudar a manter a consistência entre as operações realizadas no banco de dados e o envio de eventos para mensageria.
 
-## Pré-requisitos
+## 💗 Tecnologias utilizadas
 
-Antes de iniciar, instale:
 
-- Node.js  versão : v22.17.0.
-- npm versão 11.6.2.
-- Docker version 29.8.2
-- Uma conta e um token do LocalStack.
+- **Node.js e TypeScript** 
+- **NestJS**
+- **PostgreSQL e TypeORM** 
+- **Docker e Docker Compose** 
+- **LocalStack e Amazon SQS** 
+- **Testcontainers** 
 
-Verifique as instalações:
+## 🌷 Pré-requisitos
+
+Antes de começar, verifique se você tem:
+
+- Node.js `v22.17.0`
+- npm `11.6.2`
+- Docker instalado e em execução
+- Uma conta no LocalStack e um token de autenticação válido
+
+Para conferir as versões instaladas:
 
 ```bash
 node --version
@@ -32,103 +34,111 @@ docker --version
 docker compose version
 ```
 
-## Configuração do ambiente
+## 🩷 Configurando o projeto
 
-Clone o repositório e entre na pasta do projeto:
+### 1. Clone o repositório
 
 ```bash
-git clone <URL_DO_REPOSITORIO>
+git clone https://github.com/cristianaLuiza/backend-challenge.git
 cd backend-challenge
 ```
 
-Crie o arquivo `.env` a partir do modelo disponibilizado:
+### 2. Configure as variáveis de ambiente
+
+Crie o arquivo `.env` com base no modelo disponibilizado:
 
 ```bash
 cp .env.example .env
 ```
 
-No Windows PowerShell:
 
-```powershell
-Copy-Item .env.example .env
+Atenção: é necessário no .env ter a variavel de ambiente LOCALSTACK_AUTH_TOKEN={seu_token_aqui}, para subir os conteiners do docker.
+
+O arquivo `.env.example` contém as configurações de referência para executar o projeto localmente.
+
+### 3. Configure o token do LocalStack
+
+A versão do LocalStack utilizada neste projeto exige autenticação por token.
+
+Para configurar:
+
+1. Crie uma conta em [LocalStack](https://app.localstack.cloud/).
+2. Gere seu token de autenticação seguindo as instruções da plataforma.
+3. Abra o arquivo `.env` e configure a variável:
+
+```dotenv
+LOCALSTACK_AUTH_TOKEN=seu_token_aqui
 ```
 
-Confira as variáveis no `.env` e ajuste os valores conforme necessário.
+Substitua `seu_token_aqui` pelo token gerado na sua conta.
 
-O arquivo `.env.example` contém as configurações necessárias para o ambiente local. Não versione o arquivo `.env`, pois ele pode conter credenciais e tokens.
+**Importante:** o arquivo `.env` contém configurações locais e não deve ser enviado ao GitHub. Utilize o `.env.example` como modelo, sem incluir seu token real.
 
-## Banco de dados
+## 🐘 Banco de dados
 
 O PostgreSQL é executado em um container Docker.
 
-Credenciais padrão do ambiente local:
+As credenciais padrão do ambiente local são:
 
 | Configuração | Valor |
 |---|---|
 | Host | `localhost` |
 | Porta | `5432` |
-| Banco | `jungle` |
+| Banco de dados | `jungle` |
 | Usuário | `jungle` |
 | Senha | `jungle` |
 
 Essas credenciais são destinadas exclusivamente ao desenvolvimento local.
 
-## Inicialização da infraestrutura
+## 🐳 Inicializando a infraestrutura
 
-Na raiz do projeto, execute:
+Com o Docker em execução, inicie os serviços na raiz do projeto:
 
 ```bash
 docker compose up -d
 ```
 
-O Docker Compose inicia o PostgreSQL e o LocalStack.
+Esse comando inicia os containers configurados no Docker Compose, incluindo o PostgreSQL e o LocalStack.
 
-Verifique o estado dos containers:
+Para verificar se os serviços estão em execução:
 
 ```bash
 docker compose ps
 ```
 
-Para consultar os logs:
+Para acompanhar os logs:
 
 ```bash
 docker compose logs -f
 ```
 
-Para consultar apenas os logs do LocalStack:
+Se precisar verificar especificamente o LocalStack:
 
 ```bash
 docker compose logs -f localstack
 ```
 
-## Configuração do SQS
+## 💌 Configuração do SQS
 
-O LocalStack disponibiliza localmente a API SQS para desenvolvimento e testes.
+O projeto utiliza o **Amazon SQS** para mensageria, com o LocalStack fornecendo um ambiente local para desenvolvimento e testes.
 
-A fila utilizada pela aplicação é `outbox-queue`.
-
-Após iniciar o LocalStack, verifique se a fila foi criada:
-
-```bash
-docker compose exec localstack awslocal sqs list-queues
-```
-
-Se a fila não existir e ainda não tiver sido criada automaticamente pela configuração de inicialização, crie-a com:
-
-```bash
-docker compose exec localstack awslocal sqs create-queue \
-  --queue-name outbox-queue
-```
-
-O endpoint local do SQS é:
+O endpoint local é:
 
 ```text
 http://localhost:4566
 ```
 
-A região utilizada no ambiente local é `us-east-1`.
+A região configurada é `us-east-1`.
 
-## Instalação e execução da aplicação
+Para verificar as filas disponíveis:
+
+```bash
+docker compose exec localstack awslocal sqs list-queues
+```
+
+Se a configuração de inicialização estiver funcionando corretamente, a fila `outbox-queue` deverá aparecer na listagem.
+
+## 🚀 Instalando e executando a aplicação
 
 Instale as dependências:
 
@@ -136,64 +146,30 @@ Instale as dependências:
 npm install
 ```
 
-Execute as migrations necessárias, caso não sejam aplicadas automaticamente pela aplicação:
 
-```bash
-npm run migration:run
-```
-
-Inicie a aplicação em modo de desenvolvimento:
+Para iniciar o servidor em modo de desenvolvimento:
 
 ```bash
 npm run start:dev
 ```
 
-**Observação:** os comandos de migrations devem corresponder aos scripts realmente definidos no `package.json`. Consulte os scripts disponíveis antes de executar.
+## 🧪 Testes
 
-## Testes
-
-Execute os testes unitários:
+Para executar os testes unitários e integrados:
 
 ```bash
 npm run test
 ```
 
-Execute os testes end-to-end, se configurados:
 
-```bash
-npm run test:e2e
-```
+## 🌙 Encerrando o ambiente
 
-Para verificar a infraestrutura SQS, envie uma mensagem de teste pela AWS CLI disponibilizada no container do LocalStack ou utilize os endpoints e fluxos implementados pela aplicação.
-
-## Arquitetura e decisões técnicas
-
-### Transactional Outbox
-
-O padrão Transactional Outbox é utilizado para persistir mensagens relacionadas às operações de negócio no banco de dados, permitindo que a publicação assíncrona seja realizada posteriormente.
-
-A tabela Outbox mantém os registros que serão processados pelo publicador.
-
-### Mensageria
-
-O LocalStack fornece um ambiente local para testar a integração com a API SQS sem precisar utilizar uma fila hospedada na AWS.
-
-### Consistência e confiabilidade
-
-A implementação busca preservar a consistência das operações financeiras, considerando tratamento de falhas, idempotência e processamento das mensagens conforme as regras implementadas no projeto.
-
-## Encerrando o ambiente
-
-Para parar os containers:
+Quando terminar de trabalhar no projeto, você pode parar os containers com:
 
 ```bash
 docker compose down
 ```
 
-Para remover também os volumes persistentes do PostgreSQL e do LocalStack:
+---
 
-```bash
-docker compose down -v
-```
-
-**Atenção:** o segundo comando apaga os dados armazenados nesses volumes. Utilize-o somente quando quiser reiniciar o ambiente do zero.
+Feito com 💗 por **Cristiana Luiza**.

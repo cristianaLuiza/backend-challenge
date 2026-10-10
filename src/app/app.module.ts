@@ -16,6 +16,7 @@ import { WageringService } from "../aplicacoes/wagering.service";
 import { WageringController } from "../apresentacao/wagering.controller";
 import { OutboxEntity } from "src/infraestrutura/outbox.entity";
 import { OutboxMessageRepository } from "src/infraestrutura/outbox-message.repository";
+import { HealthController } from "src/apresentacao/health.controller";
 
 @Module({
   imports: [
@@ -42,7 +43,7 @@ import { OutboxMessageRepository } from "src/infraestrutura/outbox-message.repos
       OutboxEntity,
     ]),
   ],
-  controllers: [AppController, WalletController, WageringController],
+  controllers: [AppController, WalletController, WageringController, HealthController],
   providers: [
     AppService,
     WageringService,

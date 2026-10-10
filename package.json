@@ -10,7 +10,8 @@
     "build": "nest build",
     "test": "bun test",
     "test:unit": "bun test src/domain src/utils src/aplicacoes/wagering.service.spec.ts",
-    "test:integration": "bun test src/aplicacoes/wagering.integration.spec.ts"
+    "test:integration": "bun test src/aplicacoes/wagering.integration.spec.ts",
+    "migration:run": "typeorm-ts-node-commonjs migration:run -d src/database/data-source.ts"
   },
   "dependencies": {
     "@nestjs/common": "^12.1.2",
